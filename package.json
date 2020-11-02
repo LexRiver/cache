@@ -1,0 +1,39 @@
+{
+    "name": "@lexriver/cache",
+    "version": "1.0.0",
+    "description": "",
+    "main": "out/index.js",
+    "types": "out/index.d.ts",
+    "scripts": {
+        "test": "npx jest",
+        "build": "tsc -p ."
+    },
+    "keywords": [
+        "cache",
+        "variable",
+        "cached variable",
+        "map",
+        "cached map",
+        "lazy",
+        "boxed value",
+        "typescript"
+    ],
+    "author": "LexRiver <LexRiver@gmail.com> (https://github.com/LexRiver/)",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/LexRiver/cache.git"
+    },
+    "devDependencies": {
+        "@types/jest": "^24.0.23",
+        "@types/node": "^12.7.8",
+        "jest": "^24.9.0",
+        "ts-jest": "^24.2.0",
+        "typescript": "^3.8.3"
+    },
+    "dependencies": {
+        "@lexriver/async": "^1.0.0",
+        "@lexriver/json-map": "^1.0.0",
+        "@lexriver/type-event": "^1.1.0"
+    }
+}
