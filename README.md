@@ -6,7 +6,7 @@ This package provides
 * `CachedVariable<T>`
 * `CachedMap<K,V>`
 
-for caching your data
+for caching your data.
 
 ## Install
 ```
@@ -22,7 +22,7 @@ npm install @lexriver/cache
     const myCachedVariable = new CachedVariable<string>(options)
 ```
 
-where `options` is an object of type
+where `options` is an object of type:
 ```typescript
 {
     maxAgeInMilliseconds:number, 
@@ -38,7 +38,7 @@ where `options` is an object of type
 * `useLazyUpdate?:boolean` if true then stale value will be updated only on `getAsync()` method
 
 
-Example
+__Example__
 ```typescript
     const myCachedVariable = new CachedVariable<string>({
         maxAgeInMilliseconds:5000, 
@@ -48,6 +48,8 @@ Example
         initialValue:'default value'
     })
 ```
+
+<br/>
 
 ### `setUpdateFunction(updateFunctionAsync:(prevValue?:T)=>Promise<T>|T)`
 
@@ -126,7 +128,7 @@ Check if there is some value in cache
 
 `K` can be `number`, `boolean`, `string`, `Object`, or interface
 
-`options` is an object of type
+`options` is an object of type:
 ```typescript
 {
     maxAgeInMilliseconds:number, 
@@ -193,7 +195,7 @@ Clear cache and force to update all values.
 
 ### `clearCacheForKey(key:K)`
 
-force to update value only for specified key.
+Force to update value only for specified key.
 
 ```typescript
     myCahcedMap.clearCacheForKey('myKey')
@@ -239,7 +241,7 @@ __Example__
 
 ### `get hasValue():boolean`
 
-Check if box has a value
+Check if box has a value.
 
 ```typescript
     myBoxedValue.hasValue // true or false
@@ -249,7 +251,7 @@ Check if box has a value
 
 ### `get isEmpty():boolean`
 
-Check if box is empty
+Check if box is empty.
 
 ```typescript
     myBoxedValue.isEmpty // true or false
@@ -259,7 +261,7 @@ Check if box is empty
 
 ### `set(value:T)`
 
-Set new value
+Set new value.
 
 ```typescript
     myBoxedValue.set(100)
@@ -269,7 +271,7 @@ Set new value
 
 ### `setByPrevious(action:(previousValue?:T)=>T)`
 
-Set new value by previous value
+Set new value by using previous value.
 
 ```typescript
     myBoxedValue.setByPrevious((prev:number) => prev+1)
@@ -279,7 +281,7 @@ Set new value by previous value
 
 ### `getOrThrow()`
 
-Return value if exists else throw a error
+Return value if exists else throw an error.
 
 ```typescript
     try {
@@ -296,7 +298,7 @@ Return value if exists else throw a error
 
 ### `getOrUndefined():T|undefined`
 
-Return value if exists else return undefined
+Return value if exists else return undefined.
 
 ```typescript
     const myBoxedValue = new BoxedValue<number>()
@@ -309,7 +311,7 @@ Return value if exists else return undefined
 
 ### `deleteValue()`
 
-Delete value if exists
+Delete value if exists.
 
 ```typescript
     myBoxedValue.set(100)
