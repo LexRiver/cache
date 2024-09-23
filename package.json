@@ -1,6 +1,6 @@
 {
     "name": "@lexriver/cache",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "",
     "main": "out/index.js",
     "types": "out/index.d.ts",
@@ -33,7 +33,7 @@
     },
     "dependencies": {
         "@lexriver/async": "^1.0.0",
-        "@lexriver/json-map": "^1.0.0",
+        "@lexriver/json-map": "^1.0.1",
         "@lexriver/type-event": "^1.1.0"
     }
 }

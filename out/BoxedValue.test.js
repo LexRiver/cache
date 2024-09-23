@@ -13,6 +13,15 @@ test('no initial value', function () {
     expect(function () { x.getOrThrow(); }).toThrow();
     expect(x.getOrUndefined()).toBeUndefined();
 });
+test('undefined value', function () {
+    var x = new BoxedValue_1.BoxedValue();
+    expect(x.hasValue).toBeFalsy();
+    x.set(undefined);
+    expect(x.hasValue).toBeTruthy();
+    expect(x.getOrThrow()).toBeUndefined();
+    x.set(100);
+    expect(x.getOrThrow()).toEqual(100);
+});
 test('check value', function () {
     var x = new BoxedValue_1.BoxedValue();
     x.set(100);

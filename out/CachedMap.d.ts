@@ -12,7 +12,7 @@ export declare class CachedMap<K, V> {
         updateFunction: (key: K) => Promise<V> | V;
         useLazyUpdate?: boolean;
     });
-    setUpdateFunction(updateFunctionAsync: (key: K) => Promise<V>): void;
+    setUpdateFunction(updateFunctionAsync: (key: K) => Promise<V> | V): void;
     getAsync(key: K): Promise<V>;
     clearCache(): void;
     clearCacheForKey(key: K): void;
