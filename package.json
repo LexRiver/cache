@@ -1,12 +1,12 @@
 {
     "name": "@lexriver/cache",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "description": "",
-    "main": "out/index.js",
-    "types": "out/index.d.ts",
+    "type": "module",
+    "exports": "./out/src/index.mjs",
     "scripts": {
-        "test": "npx jest",
-        "build": "tsc -p ."
+        "test": "vitest",
+        "build": "rimraf out && tsc"
     },
     "keywords": [
         "cache",
@@ -25,15 +25,14 @@
         "url": "git+https://github.com/LexRiver/cache.git"
     },
     "devDependencies": {
-        "@types/jest": "^24.0.23",
-        "@types/node": "^12.7.8",
-        "jest": "^24.9.0",
-        "ts-jest": "^24.2.0",
-        "typescript": "^3.8.3"
+        "@types/node": "^22.7.0",
+        "rimraf": "^6.0.1",
+        "typescript": "^5.6.2",
+        "vitest": "^2.1.1"
     },
     "dependencies": {
-        "@lexriver/async": "^1.0.0",
-        "@lexriver/json-map": "^1.0.1",
-        "@lexriver/type-event": "^1.1.0"
+        "@lexriver/async": "^3.0.1",
+        "@lexriver/json-map": "^2.0.0",
+        "@lexriver/type-event": "^2.0.0"
     }
 }

@@ -1,5 +1,6 @@
-import { CachedMap } from "./CachedMap"
 import { Async } from "@lexriver/async"
+import { expect, test } from 'vitest'
+import { CachedMap } from "./CachedMap.mjs"
 
 async function waitMsAsync(ms:number){
     return new Promise((resolve) => {

@@ -1,4 +1,5 @@
-import { BoxedValue } from "./BoxedValue"
+import { expect, test } from 'vitest'
+import { BoxedValue } from "./BoxedValue.mjs"
 
 test('initial value', () => {
     let x = new BoxedValue<number>(0)

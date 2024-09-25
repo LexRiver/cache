@@ -1,4 +1,4 @@
-import { BoxedValue } from "./BoxedValue"
+import { BoxedValue } from "./BoxedValue.mjs"
 
 async function test(){
     let x = new BoxedValue<number>(0)

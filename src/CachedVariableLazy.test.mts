@@ -1,5 +1,6 @@
-import { CachedVariable } from "./CachedVariable"
 import { Async } from "@lexriver/async"
+import { expect, test } from 'vitest'
+import { CachedVariable } from "./CachedVariable.mjs"
 
 test('CachedVariable', async () => {
     let counter = 4

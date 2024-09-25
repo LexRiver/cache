@@ -1,5 +1,5 @@
-import { CachedVariable } from "./CachedVariable";
-import {JsonMap} from "@lexriver/json-map"
+import { JsonMap } from "@lexriver/json-map";
+import { CachedVariable } from "./CachedVariable.mjs";
 
 export class CachedMap<K,V>{
     protected internalMap = new JsonMap<K, CachedVariable<V>>()

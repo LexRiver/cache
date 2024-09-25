@@ -1,6 +1,6 @@
 import { Async } from "@lexriver/async"
 import { TypeEvent } from "@lexriver/type-event"
-import { BoxedValue } from "./BoxedValue"
+import { BoxedValue } from "./BoxedValue.mjs"
 
 
 /**
