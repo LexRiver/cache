@@ -125,7 +125,7 @@ export class CachedVariable<T>{
      */
     public async clearCacheAsync():Promise<void>{
         this.invalidateCurrentValue()
-        await this.onDisposeEvent.triggerAsync()
+        await this.onDisposeEvent.trigger()
     }
 
     protected invalidateCurrentValue():void{

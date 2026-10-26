@@ -1,6 +1,6 @@
 {
     "name": "@lexriver/cache",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "",
     "type": "module",
     "exports": "./out/src/index.mjs",
@@ -25,14 +25,14 @@
         "url": "git+https://github.com/LexRiver/cache.git"
     },
     "devDependencies": {
-        "@lexriver/async": "^3.0.1",
+        "@lexriver/async": "^3.0.3",
         "@types/node": "^22.7.0",
         "rimraf": "^6.0.1",
         "typescript": "^5.6.2",
         "vitest": "^2.1.1"
     },
     "dependencies": {
-        "@lexriver/json-map": "^2.0.0",
-        "@lexriver/type-event": "^2.0.0"
+        "@lexriver/json-map": "^3.0.1",
+        "@lexriver/type-event": "^3.0.4"
     }
 }
