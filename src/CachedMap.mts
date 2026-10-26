@@ -34,14 +34,16 @@ export class CachedMap<K,V>{
     }
 
 
-    public clearCache(){
-        this.internalMap = new JsonMap<K, CachedVariable<V>>()    
+    public async clearCache():Promise<void>{
+        const cachedVariables = Array.from(this.internalMap.values())
+        this.internalMap = new JsonMap<K, CachedVariable<V>>()
+        await Promise.all(cachedVariables.map(cachedVariable => cachedVariable.clearCacheAsync()))
     }
 
-    public clearCacheForKey(key:K){
+    public async clearCacheForKey(key:K):Promise<void>{
         const cachedVariable = this.internalMap.get(key)
         if(cachedVariable) {
-            cachedVariable.clearCacheAsync()
+            await cachedVariable.clearCacheAsync()
         }
     }
 

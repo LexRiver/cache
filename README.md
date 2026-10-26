@@ -63,7 +63,7 @@ Change the update function
 
 ### `async getAsync():Promise<T>`
 
-Returns cached value if possible or executes updateFunctionAsync to get a new value
+Returns the cached value when available or executes the update function to get a new value. Concurrent callers share one in-flight update. If an invalidation overlaps that update, waiting callers retry rather than observing the obsolete result.
 
 ```typescript
     await myCachedVariable.getAsync()
@@ -81,9 +81,9 @@ Set new value
 
 <br/>
 
-### `async clearCacheAsync()`
+### `async clearCacheAsync():Promise<void>`
 
-Remove any existing value from cache
+Remove any existing value from cache. Invalidation takes effect immediately, supersedes in-flight updates and expiration timers, and awaits `onDisposeEvent` subscribers.
 
 ```typescript
     await myCachedVariable.clearCacheAsync()
@@ -183,22 +183,22 @@ Get value by key.
 
 <br/>
 
-### `clearCache()`
+### `async clearCache():Promise<void>`
 
-Clear cache and force to update all values.
+Clear the map and invalidate all existing entries. The map is replaced synchronously, while the returned promise waits for entry disposal events.
 
 ```typescript
-    myCachedMap.clearCache()
+    await myCachedMap.clearCache()
 ```
 
 <br/>
 
-### `clearCacheForKey(key:K)`
+### `async clearCacheForKey(key:K):Promise<void>`
 
-Force to update value only for specified key.
+Invalidate the value for one key and wait for its disposal events.
 
 ```typescript
-    myCahcedMap.clearCacheForKey('myKey')
+    await myCachedMap.clearCacheForKey('myKey')
 ```
 
 <br/><br/>

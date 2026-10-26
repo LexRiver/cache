@@ -1,4 +1,3 @@
-import { Async } from "@lexriver/async"
 import { TypeEvent } from "@lexriver/type-event"
 import { BoxedValue } from "./BoxedValue.mjs"
 
@@ -10,8 +9,12 @@ import { BoxedValue } from "./BoxedValue.mjs"
  */
 export class CachedVariable<T>{
     public onDisposeEvent:TypeEvent<()=>void> = new TypeEvent<()=>void>()
-    protected timer:any
+    protected expirationTimer?:ReturnType<typeof setTimeout>
+    protected periodicUpdateTimer?:ReturnType<typeof setTimeout>
     protected valueB:BoxedValue<T> = new BoxedValue<T>()
+    protected updatePromise?:Promise<T>
+    protected updateGeneration?:number
+    protected generation = 0
 
     constructor(
         protected p:{
@@ -28,16 +31,20 @@ export class CachedVariable<T>{
         //if(!p.updateFunction) throw new Error('No updateFunction')
 
         if(!p.useLazyUpdate){
-            this.startUpdateByTimer()
+            void this.startUpdateByTimer()
         }
     }
 
-    protected async startUpdateByTimer(){
-        await this.updateAsync()
-        //await Async.waitMsAsync(this.p.maxAgeInMilliseconds-1)
-        setTimeout(() => {
-            this.startUpdateByTimer()
-        }, this.p.maxAgeInMilliseconds-1)
+    protected async startUpdateByTimer():Promise<void>{
+        try {
+            await this.updateAsync()
+        } catch(x) {
+            console.error('CachedVariable: error while updating', x)
+        } finally {
+            this.periodicUpdateTimer = setTimeout(() => {
+                void this.startUpdateByTimer()
+            }, this.p.maxAgeInMilliseconds)
+        }
     }
 
 
@@ -51,73 +58,93 @@ export class CachedVariable<T>{
      * returns cached value if possible or executes updateFunctionAsync to get a new value
      */
     async getAsync():Promise<T>{
-        if(this.valueB.isEmpty){
-            // if(this.p.useLazyUpdate){
-                if(!this.isUpdatingNow){
-                    await this.updateAsync()
+        while(true){
+            if(this.valueB.hasValue){
+                return this.valueB.getOrThrow()
+            }
 
-                } else {
-                    await this.waitForUpdate()
+            const updatePromise = this.updateAsync()
+            const updateGeneration = this.updateGeneration!
 
+            try {
+                const value = await updatePromise
+                if(this.generation === updateGeneration){
+                    return value
                 }
-            // } else {
-            //     await 
-            // }
-        }
-        //if(this.value === undefined) throw new Error('undefined result in cached variable')
-        return this.valueB.getOrThrow()
-    }
-
-    protected async waitForUpdate(){
-        let waitMs = 2
-        while(this.isUpdatingNow){
-            await Async.waitMsAsync(waitMs)
-            if(waitMs < 10*1000) {
-                waitMs *= 2
+            } catch(x) {
+                if(this.generation === updateGeneration){
+                    throw x
+                }
             }
         }
     }
 
-    protected isUpdatingNow:boolean = false
-    protected async updateAsync(){
-        this.isUpdatingNow = true
-        try {
-            this.valueB.set(await this.p.updateFunction(this.valueB.getOrUndefined()))
-            this.isUpdatingNow = false
-            if(this.p.useLazyUpdate){
-                this.disposeValueByTimer()
-            }
-
-        } catch(x){
-            console.error('CachedVariable: error while updating', x)
-            throw x
+    protected updateAsync():Promise<T>{
+        if(this.updatePromise){
+            return this.updatePromise
         }
+
+        const updateGeneration = this.generation
+        const previousValue = this.valueB.getOrUndefined()
+        const performUpdate = Promise.resolve()
+            .then(() => this.p.updateFunction(previousValue))
+            .then(value => {
+                if(this.generation === updateGeneration){
+                    this.valueB.set(value)
+                    if(this.p.useLazyUpdate){
+                        this.disposeValueByTimer(updateGeneration)
+                    }
+                }
+                return value
+            })
+
+        let updatePromise!:Promise<T>
+        updatePromise = performUpdate.finally(() => {
+            if(this.updatePromise === updatePromise){
+                this.updatePromise = undefined
+                this.updateGeneration = undefined
+            }
+        })
+
+        this.updateGeneration = updateGeneration
+        this.updatePromise = updatePromise
+        return updatePromise
     }
 
-    public async updateWithValueAsync(value:T){
-        await this.waitForUpdate()
+    public async updateWithValueAsync(value:T):Promise<void>{
+        this.invalidateCurrentValue()
         this.valueB.set(value)
-        this.disposeValueByTimer()
+        if(this.p.useLazyUpdate){
+            this.disposeValueByTimer(this.generation)
+        }
     }
 
 
     /**
      * clears cache and load new value (if not lazyUpdate)
      */
-    public async clearCacheAsync(){
-        await this.waitForUpdate()
-        this.valueB.deleteValue()
-        this.onDisposeEvent.triggerAsync()
+    public async clearCacheAsync():Promise<void>{
+        this.invalidateCurrentValue()
+        await this.onDisposeEvent.triggerAsync()
     }
 
-    protected disposeValueByTimer(){
-        clearTimeout(this.timer)
-        this.timer = setTimeout(() => {
-            //console.log('removing variable from memory by timeout')
-            this.clearCacheAsync()
+    protected invalidateCurrentValue():void{
+        this.generation++
+        clearTimeout(this.expirationTimer)
+        this.expirationTimer = undefined
+        this.valueB.deleteValue()
+    }
 
+    protected disposeValueByTimer(valueGeneration:number):void{
+        clearTimeout(this.expirationTimer)
+        this.expirationTimer = setTimeout(() => {
+            if(this.generation !== valueGeneration){
+                return
+            }
+            void this.clearCacheAsync().catch(x => {
+                console.error('CachedVariable: error while disposing', x)
+            })
         }, this.p.maxAgeInMilliseconds)
-        //console.log('setting timer', this.timer)
     }
 
     public get hasValue(){
